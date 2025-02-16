@@ -4,6 +4,7 @@ import { Search, Sun, Moon, Menu, Bell, X, User, Settings, LogOut } from 'lucide
 import { useStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 
+
 export function Header() {
   const [isDark, setIsDark] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,7 +53,7 @@ export function Header() {
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
             <Link to= '/'  className="mr-4">
-              <img src="/src/icon.svg" alt="Logo" className="h-10 w-auto object-contain"/>
+              <img src="icon.svg" alt="Logo" className="h-10 w-auto object-contain"/>
             </Link>
           </div>
 
