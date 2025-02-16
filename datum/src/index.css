@@ -72,3 +72,4 @@ html {
 .dark ::-webkit-scrollbar-thumb:hover {
   background: theme('colors.gray.500');
 }
+

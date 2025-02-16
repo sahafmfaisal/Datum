@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Search, Sun, Moon, Menu, Bell, X, BookOpen, User, Settings, LogOut } from 'lucide-react';
+import { Search, Sun, Moon, Menu, Bell, X, User, Settings, LogOut } from 'lucide-react';
 import { useStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 
@@ -44,16 +44,15 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo and Mobile Menu Button */}
-          <div className="flex items-center gap-10">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-            >
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}>
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
-            <Link to="/" className="flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-blue-600" />
+            <Link to= '/'  className="mr-4">
+              <img src="/src/icon.svg" alt="Logo" className="h-10 w-auto object-contain"/>
             </Link>
           </div>
 
