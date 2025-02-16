@@ -54,7 +54,6 @@ export function Header() {
             </button>
             <Link to="/" className="flex items-center gap-2">
               <BookOpen className="w-6 h-6 text-blue-600" />
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">BookMind</h1>
             </Link>
           </div>
 

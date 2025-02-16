@@ -1,9 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Star, Users, Sparkles } from 'lucide-react';
 
 export function LandingPage() {
-  const bookRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
