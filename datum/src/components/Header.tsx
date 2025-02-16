@@ -52,7 +52,7 @@ export function Header() {
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
             <Link to= '/'  className="mr-4">
-              <img src="./Group 19 (1).svg" alt="Logo" className="h-10 w-auto object-contain"/>
+              <img src="/images/icon.svg" alt="Logo" className="h-10 w-auto object-contain"/>
             </Link>
           </div>
 
