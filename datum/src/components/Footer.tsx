@@ -45,7 +45,7 @@ export function Footer() {
                             <a href="https://twitter.com" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
                                 <Twitter className="h-6 w-6" />
                             </a>
-                            <a href="https://instagram.com" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+                            <a href="https://instagram.com/sahafmfaisal" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
                                 <Instagram className="h-6 w-6" />
                             </a>
                             <a href="https://github.com/sahafmfaisal/Datum" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
