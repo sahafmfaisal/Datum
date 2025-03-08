@@ -101,7 +101,6 @@ export function Header() {
             >
               {isMenuOpen ? <X className="w-6 h-6 dark:text-white" /> : <Menu className="w-6 h-6 dark:text-white" />}
             </button>
-<<<<<<< HEAD
             
             <Link to="/" className="className= mr-4">
               <img
@@ -112,10 +111,6 @@ export function Header() {
                 alt="Logo"
                 className="h-8 w-auto object-contain"
               />
-=======
-            <Link to= '/'  className="mr-4">
-              <img src="/images/icon.svg" alt="Logo" className="h-10 w-auto object-contain"/>
->>>>>>> 622835987a669da64147d8700225f740f10442e7
             </Link>
           </div>
 
