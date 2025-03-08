@@ -20,3 +20,4 @@ export const useStore = create<UserState>((set) => ({
   },
   setPreferences: (preferences) => set({ preferences }),
 }));
+

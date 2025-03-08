@@ -1,9 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Star, Users, Sparkles } from 'lucide-react';
 
 export function LandingPage() {
-  const bookRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -129,19 +128,6 @@ export function LandingPage() {
           </Link>
         </div>
       </section>
-
-      {/* Footer Section */}
-      <footer className="bg-gray-200 dark:bg-gray-800 py-6">
-        <div className="container mx-auto text-center">
-          <p className="text-gray-700 dark:text-gray-300">
-            &copy; 2025 Datum. All rights reserved.
-          </p>
-          <p className="text-gray-700 dark:text-gray-300">
-            <Link to="/terms" className="underline hover:text-gray-500 mx-2">Terms</Link>
-            <Link to="/privacy" className="underline hover:text-gray-500 mx-2">Privacy</Link>
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

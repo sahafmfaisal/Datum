@@ -1,15 +1,20 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Header } from './components/Header';
-import { BookCarousel } from './components/BookCarousel';
-import { AuthForm } from './components/AuthForm';
-import { OnboardingForm } from './components/OnboardingForm';
-import { BookDetail } from './components/BookDetail';
-import { UserProfile } from './components/UserProfile';
-import { LandingPage } from './components/LandingPage';
 import { useStore } from './lib/store';
 import { supabase } from './lib/supabase';
 
+// Components
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
+import { LandingPage } from './components/LandingPage';
+import { AuthForm } from './components/AuthForm';
+import { OnboardingForm } from './components/OnboardingForm';
+import { UserProfile } from './components/UserProfile';
+import { BookCarousel } from './components/BookCarousel';
+import { BookDetail } from './components/BookDetail';
+import { BookList } from './components/BookList';
+
+// Mock data
 const MOCK_BOOKS = [
   {
     id: '1',
@@ -89,11 +94,15 @@ function App() {
   const { user, setUser } = useStore();
 
   useEffect(() => {
+    // Check active sessions and sets the user
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Listen for changes on auth state (sign in, sign out, etc.)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
@@ -102,94 +111,123 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
         <Header />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              user ? (
-                <main className="container mx-auto px-4 py-8">
-                  <section className="mb-12">
-                    <div className="max-w-4xl">
-                      <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                        Welcome back, {user.email?.split('@')[0]}
-                      </h1>
-                      <p className="text-lg text-gray-600 dark:text-gray-400">
-                        Discover new stories tailored just for you
-                      </p>
-                    </div>
-                  </section>
+        <main className="flex-grow">
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                user ? <Navigate to="/dashboard" /> : <LandingPage />
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                !user ? <Navigate to="/login" /> : (
+                  <div className="container mx-auto px-4 py-8">
+                    <section className="mb-12">
+                      <div className="max-w-4xl">
+                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                          Welcome back, {user.email?.split('@')[0]}
+                        </h1>
+                        <p className="text-lg text-gray-600 dark:text-gray-400">
+                          Discover new stories tailored just for you
+                        </p>
+                      </div>
+                    </section>
 
-                  <section className="space-y-12">
-                    <BookCarousel title="Books You'll Love" books={MOCK_BOOKS} />
-                    <BookCarousel title="Trending Now" books={MOCK_BOOKS} />
-                    <BookCarousel title="New Releases" books={MOCK_BOOKS} />
-                  </section>
-                </main>
-              ) : (
-                <LandingPage />
-              )
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              user ? <Navigate to="/" /> : (
-                <div className="container mx-auto px-4 py-8">
-                  <div className="max-w-md mx-auto">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                      Sign In to Datum
-                    </h2>
-                    <AuthForm type="login" />
+                    <section className="space-y-12">
+                      <BookCarousel title="Books You'll Love" books={MOCK_BOOKS} />
+                      <BookCarousel title="Trending Now" books={MOCK_BOOKS} />
+                      <BookCarousel title="New Releases" books={MOCK_BOOKS} />
+                    </section>
                   </div>
-                </div>
-              )
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              user ? <Navigate to="/onboarding" /> : (
-                <div className="container mx-auto px-4 py-8">
-                  <div className="max-w-md mx-auto">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                      Create your Datum account
-                    </h2>
-                    <AuthForm type="register" />
+                )
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                user ? (
+                  <Navigate to="/dashboard" />
+                ) : (
+                  <div className="min-h-[calc(100vh-64px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+                    <div className="auth-background absolute inset-0"></div>
+                    <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl relative z-10">
+                      <div className="text-center">
+                        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+                          Welcome back
+                        </h2>
+                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                          Sign in to your account to continue
+                        </p>
+                      </div>
+                      <AuthForm type="login" />
+                    </div>
                   </div>
-                </div>
-              )
-            }
-          />
-          <Route
-            path="/onboarding"
-            element={
-              !user ? <Navigate to="/login" /> : (
-                <div className="container mx-auto px-4 py-8">
-                  <div className="max-w-3xl mx-auto">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                      Tell us about your reading preferences
-                    </h2>
-                    <OnboardingForm />
+                )
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                user ? (
+                  <Navigate to="/onboarding" />
+                ) : (
+                  <div className="min-h-[calc(100vh-64px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+                    <div className="auth-background absolute inset-0"></div>
+                    <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl relative z-10">
+                      <div className="text-center">
+                        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+                          Create your account
+                        </h2>
+                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                          Join our community of book lovers
+                        </p>
+                      </div>
+                      <AuthForm type="register" />
+                    </div>
                   </div>
-                </div>
-              )
-            }
-          />
-          <Route
-            path="/book/:id"
-            element={
-              <BookDetail book={MOCK_BOOKS[0]} />
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              !user ? <Navigate to="/login" /> : <UserProfile />
-            }
-          />
-        </Routes>
+                )
+              }
+            />
+            <Route
+              path="/onboarding"
+              element={
+                !user ? <Navigate to="/login" /> : (
+                  <div className="container mx-auto px-4 py-8">
+                    <div className="max-w-3xl mx-auto">
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                        Tell us about your reading preferences
+                      </h2>
+                      <OnboardingForm />
+                    </div>
+                  </div>
+                )
+              }
+            />
+            <Route
+              path="/book/:id"
+              element={
+                <BookDetail book={MOCK_BOOKS[0]} />
+              }
+            />
+            <Route
+              path="/books"
+              element={
+                !user ? <Navigate to="/login" /> : <BookList books={MOCK_BOOKS} />
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                !user ? <Navigate to="/login" /> : <UserProfile />
+              }
+            />
+          </Routes>
+        </main>
+        <Footer />
       </div>
     </Router>
   );

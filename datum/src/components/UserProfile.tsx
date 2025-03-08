@@ -1,4 +1,3 @@
-import React from 'react';
 import { useStore } from '../lib/store';
 import { Book, Star, Award, Settings } from 'lucide-react';
 
