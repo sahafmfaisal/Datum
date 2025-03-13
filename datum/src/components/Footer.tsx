@@ -3,24 +3,29 @@ import { Facebook, Twitter, Instagram, Github, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function Footer() {
-    const [isDark, setIsDark] = useState(() => {
-        // Initialize from localStorage on mount
-        return localStorage.getItem('darkMode') === 'true';
-    });
+    const [isDark, setIsDark] = useState(false);
 
     useEffect(() => {
-        // Listener for storage changes
-        const handleStorageChange = () => {
-            setIsDark(localStorage.getItem('darkMode') === 'true');
+        // Initial check
+        const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const htmlElement = document.documentElement;
+        
+        const updateDarkMode = () => {
+            setIsDark(htmlElement.classList.contains('dark'));
         };
 
-        // Listen to storage events (triggered when localStorage changes in another tab)
-        window.addEventListener('storage', handleStorageChange);
+        // Set up observer to watch for class changes
+        const observer = new MutationObserver(updateDarkMode);
+        observer.observe(htmlElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
 
-        // Cleanup listener on unmount
-        return () => {
-            window.removeEventListener('storage', handleStorageChange);
-        };
+        // Initial check
+        updateDarkMode();
+
+        // Cleanup
+        return () => observer.disconnect();
     }, []);
 
     return (
