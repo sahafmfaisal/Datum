@@ -2,14 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { BookCard } from './BookCard';
 import { searchBooks, formatBookData } from '../lib/googleBooks';
 import { Search } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 export function BookList() {
+  const location = useLocation();
   const [query, setQuery] = useState('');
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const searchBooksHandler = async (searchQuery: string) => {
+  // Parse query parameters
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const searchQuery = searchParams.get('q');
+    if (searchQuery) {
+      setQuery(searchQuery);
+      searchBooksHandler(searchQuery);
+    } else {
+      // Initial popular books load
+      searchBooksHandler('bestsellers fiction 2024');
+    }
+  }, [location.search]);
+
+  const searchBooksHandler = async (searchQuery) => {
     if (!searchQuery.trim()) return;
     
     setLoading(true);
@@ -17,8 +32,12 @@ export function BookList() {
     
     try {
       const results = await searchBooks(searchQuery);
-      const formattedBooks = results.items.map(formatBookData);
-      setBooks(formattedBooks);
+      if (results && results.items) {
+        const formattedBooks = results.items.map(formatBookData);
+        setBooks(formattedBooks);
+      } else {
+        setBooks([]);
+      }
     } catch (err) {
       setError('Failed to fetch books. Please try again.');
       console.error('Error fetching books:', err);
@@ -27,16 +46,11 @@ export function BookList() {
     }
   };
 
-  // Initial popular books load
-  useEffect(() => {
-    searchBooksHandler('bestsellers fiction 2024');
-  }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     searchBooksHandler(query);
   };
-
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto mb-8">

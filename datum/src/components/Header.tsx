@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Search, Sun, Moon, Menu, Bell, X, User, Settings, LogOut } from 'lucide-react';
 import { useStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link as ScrollLink } from 'react-scroll';
 
 export function Header() {
   const [isDark, setIsDark] = useState(false);
@@ -28,6 +29,7 @@ export function Header() {
   const notificationsRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, setUser } = useStore();
 
   useEffect(() => {
@@ -64,11 +66,11 @@ export function Header() {
     navigate('/login');
   };
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     const searchInput = e.currentTarget.querySelector('input');
-    if (searchInput) {
-      console.log('Search query:', searchInput.value);
+    if (searchInput && searchInput.value.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchInput.value.trim())}`);
       setIsSearchOpen(false);
     }
   };
@@ -80,13 +82,59 @@ export function Header() {
   };
 
   const unreadCount = notifications.filter(n => n.unread).length;
+  
+  const isHomePage = location.pathname === '/';
 
+  // Navigation items with conditional rendering for scroll vs route navigation
   const menuItems = [
     { label: 'Home', path: '/' },
-    { label: 'Browse', path: '/browse' },
-    { label: 'Reading List', path: '/reading-list' },
-    { label: 'Recommendations', path: '/recommendations' },
+    { 
+      label: 'Browse', 
+      path: '/browse',
+      scrollTo: 'browse'
+    },
+    { 
+      label: 'Reading List', 
+      path: '/reading-list',
+      scrollTo: 'reading-list'
+    },
+    { 
+      label: 'Recommendations', 
+      path: '/recommendations',
+      scrollTo: 'recommendations'
+    },
   ];
+
+  // Render either a ScrollLink or regular Link based on current page
+  const renderNavLink = (item) => {
+    if (isHomePage && item.scrollTo) {
+      return (
+        <ScrollLink
+          key={item.scrollTo}
+          to={item.scrollTo}
+          spy={true}
+          smooth={true}
+          offset={-80} // Adjust based on your header height
+          duration={500}
+          className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          {item.label}
+        </ScrollLink>
+      );
+    } else {
+      return (
+        <Link
+          key={item.path}
+          to={item.path}
+          className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          {item.label}
+        </Link>
+      );
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
@@ -116,18 +164,9 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6">
-            {menuItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {menuItems.map((item) => renderNavLink(item))}
           </nav>
-
-          {/* Search Bar */}
+ {/* Search Bar */}
           <div className="flex-1 max-w-2xl mx-4 hidden lg:block">
             <form onSubmit={handleSearch} className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -298,14 +337,9 @@ export function Header() {
             >
               <div className="space-y-1">
                 {menuItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="block px-4 py-2 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
+                  <div key={item.path || item.scrollTo} className="block">
+                    {renderNavLink(item)}
+                  </div>
                 ))}
               </div>
             </motion.nav>

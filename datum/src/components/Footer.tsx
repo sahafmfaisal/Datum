@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Facebook, Twitter, Instagram, Github, Mail } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { Link as ScrollLink } from 'react-scroll';
 
 export function Footer() {
     const [isDark, setIsDark] = useState(false);
+    const location = useLocation();
+    const isHomePage = location.pathname === '/';
 
     useEffect(() => {
         const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -19,12 +22,35 @@ export function Footer() {
             attributeFilter: ['class']
         });
 
-
         updateDarkMode();
 
         // Cleanup
         return () => observer.disconnect();
     }, []);
+
+    // Helper function to render either ScrollLink or regular Link based on current page
+    const renderNavLink = (to, scrollTo, label) => {
+        if (isHomePage && scrollTo) {
+            return (
+                <ScrollLink
+                    to={scrollTo}
+                    spy={true}
+                    smooth={true}
+                    offset={-80}
+                    duration={500}
+                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer"
+                >
+                    {label}
+                </ScrollLink>
+            );
+        } else {
+            return (
+                <Link to={to} className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                    {label}
+                </Link>
+            );
+        }
+    };
 
     return (
         <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
@@ -68,19 +94,13 @@ export function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/browse" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                                    Browse
-                                </Link>
+                                {renderNavLink("/browse", "browse", "Browse")}
                             </li>
                             <li>
-                                <Link to="/reading-list" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                                    Reading List
-                                </Link>
+                                {renderNavLink("/reading-list", "reading-list", "Reading List")}
                             </li>
                             <li>
-                                <Link to="/recommendations" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                                    Recommendations
-                                </Link>
+                                {renderNavLink("/recommendations", "recommendations", "Recommendations")}
                             </li>
                         </ul>
                     </div>

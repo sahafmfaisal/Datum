@@ -74,6 +74,7 @@ function App() {
             <Route path="/profile" element={user ? <UserProfile /> : <Navigate to="/login" />} />
             <Route path="/books" element={user ? <BookList /> : <Navigate to="/login" />} />
             <Route path="/book/:id" element={user ? <BookDetail /> : <Navigate to="/login" />} />
+            <Route path="/search" element={user ? <BookList /> : <Navigate to="/login" />} />
           </Routes>
         </main>
         <Footer />
