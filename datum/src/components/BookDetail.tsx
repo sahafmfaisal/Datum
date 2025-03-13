@@ -1,34 +1,48 @@
-import React from 'react';
-import { Star, BookOpen, BookmarkPlus, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Star, BookOpen, BookmarkPlus, ThumbsUp, MessageSquare } from 'lucide-react';
+import { getBookById, formatBookData } from '../lib/googleBooks';
 
-interface Review {
-  id: string;
-  user: {
-    name: string;
-    avatar: string;
-  };
-  rating: number;
-  content: string;
-  helpful: number;
-  date: string;
-}
+export function BookDetail() {
+  const { id } = useParams();
+  const [book, setBook] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-interface BookDetailProps {
-  book: {
-    id: string;
-    title: string;
-    author: string;
-    cover: string;
-    rating: number;
-    description: string;
-    genre: string;
-    publishDate: string;
-    pages: number;
-    reviews: Review[];
-  };
-}
+  useEffect(() => {
+    const fetchBookDetails = async () => {
+      if (!id) return;
+      
+      try {
+        const bookData = await getBookById(id);
+        setBook(formatBookData(bookData));
+      } catch (err) {
+        setError('Failed to load book details');
+        console.error('Error loading book:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-export function BookDetail({ book }: BookDetailProps) {
+    fetchBookDetails();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="loading-book"></div>
+      </div>
+    );
+  }
+
+  if (error || !book) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center text-red-600">
+        {error || 'Book not found'}
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -79,52 +93,6 @@ export function BookDetail({ book }: BookDetailProps) {
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
               {book.description}
             </p>
-          </div>
-
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Reviews
-            </h2>
-            <div className="space-y-6">
-              {book.reviews.map((review) => (
-                <div key={review.id} className="border-b border-gray-200 dark:border-gray-800 pb-6">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={review.user.avatar}
-                        alt={review.user.name}
-                        className="w-10 h-10 rounded-full"
-                      />
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">
-                          {review.user.name}
-                        </p>
-                        <div className="flex items-center">
-                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                          <span className="ml-1 text-sm text-gray-600 dark:text-gray-400">
-                            {review.rating.toFixed(1)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <span className="text-sm text-gray-500">{review.date}</span>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400 mb-3">
-                    {review.content}
-                  </p>
-                  <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                      <ThumbsUp className="w-4 h-4" />
-                      <span>Helpful ({review.helpful})</span>
-                    </button>
-                    <button className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                      <MessageSquare className="w-4 h-4" />
-                      <span>Reply</span>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
