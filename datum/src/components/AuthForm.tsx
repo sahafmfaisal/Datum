@@ -53,7 +53,7 @@ export function AuthForm({ type }: AuthFormProps) {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}/profile`,
           },
         });
 
@@ -66,7 +66,7 @@ export function AuthForm({ type }: AuthFormProps) {
 
         if (data.user) {
           setUser(data.user);
-          navigate('/profile');
+          navigate('/');
         }
       }
     } catch (err) {
