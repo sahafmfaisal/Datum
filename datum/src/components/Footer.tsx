@@ -6,7 +6,6 @@ export function Footer() {
     const [isDark, setIsDark] = useState(false);
 
     useEffect(() => {
-        // Initial check
         const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const htmlElement = document.documentElement;
         
@@ -14,14 +13,13 @@ export function Footer() {
             setIsDark(htmlElement.classList.contains('dark'));
         };
 
-        // Set up observer to watch for class changes
         const observer = new MutationObserver(updateDarkMode);
         observer.observe(htmlElement, {
             attributes: true,
             attributeFilter: ['class']
         });
 
-        // Initial check
+
         updateDarkMode();
 
         // Cleanup
