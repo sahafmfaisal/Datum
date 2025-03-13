@@ -102,7 +102,7 @@ export function Header() {
               {isMenuOpen ? <X className="w-6 h-6 dark:text-white" /> : <Menu className="w-6 h-6 dark:text-white" />}
             </button>
             
-            <Link to="/" className="className= mr-4">
+            <Link to="/" className="mr-4">
               <img
                 src={isDark 
                   ? "/images/white.svg"

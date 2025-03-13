@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Element } from 'react-scroll';
 import { BookCarousel } from './BookCarousel';
 import { searchBooks, formatBookData } from '../lib/googleBooks';
 
@@ -38,22 +39,30 @@ export function HomePage() {
     }, []);
 
     return (
-        <div className="container mx-auto px-4 py-8 space-y-8">
-            <BookCarousel
-                title="Popular Books"
-                books={popularBooks}
-                loading={loading.popular}
-            />
-            <BookCarousel
-                title="Recommended for You"
-                books={recommendedBooks}
-                loading={loading.recommended}
-            />
-            <BookCarousel
-                title="Your Reading List"
-                books={readingList}
-                loading={loading.readingList}
-            />
+        <div className="container mx-auto px-4 py-8 space-y-12">
+            <Element name="browse" className="scroll-mt-16">
+                <BookCarousel
+                    title="Popular Books"
+                    books={popularBooks}
+                    loading={loading.popular}
+                />
+            </Element>
+
+            <Element name="recommendations" className="scroll-mt-16">
+                <BookCarousel
+                    title="Recommended for You"
+                    books={recommendedBooks}
+                    loading={loading.recommended}
+                />
+            </Element>
+
+            <Element name="reading-list" className="scroll-mt-16">
+                <BookCarousel
+                    title="Your Reading List"
+                    books={readingList}
+                    loading={loading.readingList}
+                />
+            </Element>
         </div>
     );
 }
