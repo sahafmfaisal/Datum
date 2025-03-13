@@ -65,7 +65,7 @@ export function Footer() {
                             />
                         </Link>
                         <p className="text-gray-600 dark:text-gray-400">
-                            Discover your next favorite book with AI-powered recommendations.
+                            Discover your next favorite book with personalised recommendations.
                         </p>
                         <div className="flex space-x-4">
                             <a href="https://facebook.com" className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
