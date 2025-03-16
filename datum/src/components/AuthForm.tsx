@@ -46,14 +46,14 @@ export function AuthForm({ type }: AuthFormProps) {
 
         if (data.user) {
           setUser(data.user);
-          navigate('/');
+          navigate('/profile');
         }
       } else {
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/profile`,
+            emailRedirectTo: `${window.location.origin}/onboarding`,
           },
         });
 
@@ -66,7 +66,7 @@ export function AuthForm({ type }: AuthFormProps) {
 
         if (data.user) {
           setUser(data.user);
-          navigate('/');
+          navigate('/onboarding');
         }
       }
     } catch (err) {

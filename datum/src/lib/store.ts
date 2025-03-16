@@ -1,48 +1,38 @@
 import { create } from 'zustand';
 import { User } from '@supabase/supabase-js';
 
-// Extend the User type with custom user metadata
-declare module '@supabase/supabase-js' {
-  interface UserMetadata {
-    name?: string;
-    age?: number;
-    gender?: string;
-    profileImage?: string;
-  }
+interface UserPreferences {
+  name: string;
+  age: number;
+  gender: string;
+  readerType: string;
+  readingLevel: string;
+  genres: string[];
+  favoriteCategories: string[];
+  profileUrl: string | null;
 }
 
 interface UserState {
   user: User | null;
+  preferences: UserPreferences;
   setUser: (user: User | null) => void;
-  preferences: {
-    genres: string[];
-    readingLevel: string;
-  };
-  setPreferences: (preferences: { genres: string[]; readingLevel: string }) => void;
-  // Add function to update user metadata
-  updateUserMetadata: (metadata: Record<string, any>) => void;
+  setPreferences: (preferences: UserPreferences) => void;
 }
+
+const defaultPreferences: UserPreferences = {
+  name: '',
+  age: 0,
+  gender: '',
+  readerType: 'casual',
+  readingLevel: 'intermediate',
+  genres: [],
+  favoriteCategories: [],
+  profileUrl: null
+};
 
 export const useStore = create<UserState>((set) => ({
   user: null,
+  preferences: defaultPreferences,
   setUser: (user) => set({ user }),
-  preferences: {
-    genres: [],
-    readingLevel: 'intermediate',
-  },
   setPreferences: (preferences) => set({ preferences }),
-  // Function to update user metadata
-  updateUserMetadata: (metadata) => set((state) => {
-    if (!state.user) return state;
-    
-    return {
-      user: {
-        ...state.user,
-        user_metadata: {
-          ...state.user.user_metadata,
-          ...metadata,
-        }
-      }
-    };
-  }),
 }));
